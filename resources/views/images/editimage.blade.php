@@ -23,7 +23,16 @@
 
             </div>
 
-            <input type="hidden" name="'album_id" value="{{$photo->album_id?$photo->album_id:$album->id}}" >
+            <div class="form-group">
+                <select id="album_id" name="album_id" >
+                    <option value="">SELECT</option>
+                    @foreach($albums as $item)
+                        <option {{$item->id==$album->id?'selected':''}} value="{{$item->id}}">{{$item->album_name}}</option>
+                    @endforeach
+                </select>
+            </div>
+
+
 
             {{csrf_field()}}
             @include('images.partial.fileupload')

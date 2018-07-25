@@ -20,4 +20,9 @@ class Photo extends Model
     public  function  setNameAttribute($value){
         $this->attributes['name'] = strtoupper($value);
     }
+
+    //relazione tra photos e albums
+    public function album(){
+       return $this->belongsTo(Album::class,'album_id','id');
+    }
 }

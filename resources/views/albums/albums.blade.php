@@ -35,8 +35,19 @@
                     </div>
                 </li>
             @endforeach
+            <li>
+
+            </li>
         </ul>
     </form>
+    <div class="row">
+        <div class="col-8 push-2 ">
+            {{--links gestisce il pagination dichiarato nel controller--}}
+            {{--con vendor passo lo stile--}}
+            {{$albums->links('vendor.pagination.bootstrap-4')}}
+
+        </div>
+    </div>
 @endsection
 @section('footer')
     @parent

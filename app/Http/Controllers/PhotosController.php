@@ -34,9 +34,10 @@ class PhotosController extends Controller
 
 
         $photo = new Photo();
+        $albums = $this->getAlbums();
 
 
-        return view('images.editimage', compact('photo','album'));
+        return view('images.editimage', compact('photo','album','albums'));
     }
 
     /**
@@ -48,6 +49,15 @@ class PhotosController extends Controller
     public function store(Request $request)
     {
         //
+        $photo = new Photo();
+        $photo->name = $request->input('name');
+        $photo->description = $request->input('description');
+        $photo->album_id = $request->input('album_id');
+
+
+        $this->processFile($photo);
+        $photo->save();
+        return redirect(route('album.getimages',$photo->album_id));
     }
 
     /**
@@ -71,8 +81,11 @@ class PhotosController extends Controller
     public function edit(Photo $photo)
     {
         //
+        $albums = $this->getAlbums();
+        //metodo del model Photo
+        $album = $photo->album;
 
-        return view('images.editimage', compact('photo'));
+        return view('images.editimage', compact('photo','albums','album'));
     }
 
     /**
@@ -87,12 +100,15 @@ class PhotosController extends Controller
         $this->processFile($photo);
         $photo->name = $request->input('name');
         $photo->description = $request->input('description');
-        $res = $photo->save();
 
+        $photo->album_id = $request->album_id;
+
+        $res = $photo->save();
 
         $mess = $res ? 'Photo '.$photo->name.' Aggiornata' : 'Photo NON'.$photo->name.' Aggiornata';
         session()->flash('message',$mess);
-        return redirect()->route('photos.index');
+        //return redirect()->route('photos.index');
+        return redirect()->route('album.getimages', $photo->album_id);
     }
 
     /**
@@ -143,5 +159,9 @@ class PhotosController extends Controller
            return Storage::disk($disk)->delete($photo->img_path);
         }
         return false;
+    }
+
+    public function getAlbums(){
+        return Album::orderBy('album_name')->get();
     }
 }

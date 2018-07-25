@@ -16,6 +16,7 @@ class AlbumsController extends Controller
     public function index( Request $request){
         //return Album::all();
         $queryBuilder = Album::orderByDesc('id')->withCount('photos');
+        //dd($queryBuilder->toSql());
         if($request->has('id')){
             $queryBuilder->where('id','=', $request->id);
         }
@@ -24,7 +25,8 @@ class AlbumsController extends Controller
             $queryBuilder->where('album_name','like', '%'.$request->album_name.'%');
         }
 
-        $albums = $queryBuilder->get();
+        //$albums = $queryBuilder->get();
+        $albums = $queryBuilder->paginate(env('IMG_PER_PAGE'));
         //dd($queryBuilder);
         //dd($albums);
         return view('albums.albums', ['albums' => $albums] );
@@ -135,6 +137,7 @@ class AlbumsController extends Controller
         return view('images.albumimages', compact('album','images'));
 
     }
+
 
 
 
